@@ -1,5 +1,7 @@
 # diffutil_sliverlist
 
+[![Pub Package](https://img.shields.io/pub/v/diffutil_sliverlist.svg)](https://pub.dartlang.org/packages/diffutil_sliverlist)
+
 A SliverList that implicitly animates changes.
 
 
