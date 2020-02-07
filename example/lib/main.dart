@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:diffutil_sliverlist/src/implicit_animated_sliver_list.dart';
+import 'package:diffutil_sliverlist/diffutil_sliverlist.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
