@@ -10,4 +10,4 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  diffutil_dart: ^0.0.6
+  diffutil_dart: ^0.1.0
