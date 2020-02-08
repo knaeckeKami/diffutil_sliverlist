@@ -1,14 +1,13 @@
 import 'package:diffutil_dart/diffutil.dart' as diffutil;
 import 'package:flutter/widgets.dart';
 
-class ListUpdateCallBackToSliverAnimatedListKeyAdapter<T, L>
+class ListUpdateCallBackToSliverAnimatedListKeyAdapter<T>
     implements diffutil.ListUpdateCallback {
   final GlobalKey<SliverAnimatedListState> stateKey;
   final Widget Function(BuildContext, Animation<double>, Widget)
       removeAnimationBuilder;
   final Widget Function(BuildContext, T) builder;
-  final L oldList;
-  final T Function(L, int) getValueByIndex;
+  final List<T> oldList;
   final Duration insertDuration;
   final Duration removeDuration;
 
@@ -18,7 +17,6 @@ class ListUpdateCallBackToSliverAnimatedListKeyAdapter<T, L>
       this.oldList,
       this.removeAnimationBuilder,
       this.insertDuration,
-      this.getValueByIndex,
       this.removeDuration);
 
   @override
@@ -34,12 +32,12 @@ class ListUpdateCallBackToSliverAnimatedListKeyAdapter<T, L>
   }
 
   @override
-  void onInserted(int position, int count) {
-    while (count > 0) {
-      stateKey.currentState.insertItem(position, duration: insertDuration);
-      count--;
-      position++;
+  void onInserted(final int position, final int count) {
+    for (var loopCount = 0; loopCount < count; loopCount++) {
+      stateKey.currentState
+          .insertItem(position + loopCount, duration: insertDuration);
     }
+    oldList.insertAll(position, List.filled(count, null));
   }
 
   @override
@@ -49,14 +47,23 @@ class ListUpdateCallBackToSliverAnimatedListKeyAdapter<T, L>
   }
 
   @override
-  void onRemoved(int position, int count) {
-    while (count > 0) {
+  void onRemoved(final int position, final int count) {
+    debugPrint("onRemoved $position $count");
+
+    for (var loopCount = 0; loopCount < count; loopCount++) {
+      final oldItem = oldList[position + loopCount];
+      // i purposfully remove the item at the same position on each
+      // turn. the internal state is updated, so it removes the right item
+      // actually. i only need to calculate the positon of oldLost
+      // which might get ot of sync if count > 1.
+      // the oldList is only updated at the end of the method for better performance
       stateKey.currentState.removeItem(
           position,
-          (context, animation) => removeAnimationBuilder(context, animation,
-              builder(context, getValueByIndex(oldList, position))),
+          (context, animation) => removeAnimationBuilder(
+              context, animation, builder(context, oldItem)),
           duration: removeDuration);
-      count--;
     }
+
+    oldList.removeRange(position, position + count);
   }
 }

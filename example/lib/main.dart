@@ -53,8 +53,8 @@ class _DiffUtilSliverListDemoState extends State<DiffUtilSliverListDemo> {
         ),
         body: CustomScrollView(
           slivers: [
-            DiffUtilSliverList.fromList<int>(
-              list,
+            DiffUtilSliverList<int>(
+              items: list,
               builder: (context, item) => Container(
                 color: colors[item % colors.length],
                 height: 48,
@@ -70,8 +70,8 @@ class _DiffUtilSliverListDemoState extends State<DiffUtilSliverListDemo> {
                 sizeFactor: animation,
                 child: child,
               ),
-              removeAnimationDuration: const Duration(milliseconds: 300),
-              insertAnimationDuration: const Duration(milliseconds: 120),
+              removeAnimationDuration: const Duration(milliseconds: 3000),
+              insertAnimationDuration: const Duration(milliseconds: 1200),
             ),
           ],
         ),
