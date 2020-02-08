@@ -1,6 +1,8 @@
+## 0.2.0+1
+
+- Documentation fixes
+
 ## 0.2.0
-
-
 
 - *Breaking Change*: Remove Support for custom list-like types, made the API too complex and added too little benefit.
 If there's need I will add specialized Widgets for custom list types.
