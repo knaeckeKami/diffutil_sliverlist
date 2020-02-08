@@ -60,8 +60,7 @@ setState(() {
 });
 ```
 
-this is not going to work, since you mutated the list and now DiffUtil can't compare the two state of the lists any more.
-
+this is not going to work, since you mutated the list and now DiffUtil can't compare the two states of the lists anymore.
 either copy the list before mutation:
 
 ```dart
