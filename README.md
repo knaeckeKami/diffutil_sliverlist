@@ -9,29 +9,30 @@ A SliverList that implicitly animates changes.
 
 Widget build(BuildContext context) {
     return CustomScrollView(
-                     slivers: [
-                       DiffUtilSliverList<int>(
-                         items: list,
-                         builder: (context, item) => Container(
-                           color: colors[item % colors.length],
-                           height: 48,
-                           width: double.infinity,
-                         ),
-                         insertAnimationBuilder: (context, animation, child) =>
-                             FadeTransition(
-                           opacity: animation,
-                           child: child,
-                         ),
-                         removeAnimationBuilder: (context, animation, child) =>
-                             SizeTransition(
-                           sizeFactor: animation,
-                           child: child,
-                         ),
-                         removeAnimationDuration: const Duration(milliseconds: 3000),
-                         insertAnimationDuration: const Duration(milliseconds: 1200),
-                       ),
-                     ],
-                   );
+             slivers: [
+               DiffUtilSliverList<int>(
+                 items: list,
+                 builder: (context, item) => 
+                   Container(
+                     color: colors[item % colors.length],
+                     height: 48,
+                     width: double.infinity,
+                 ),
+                 insertAnimationBuilder: (context, animation, child) =>
+                     FadeTransition(
+                       opacity: animation,
+                       child: child,
+                 ),
+                 removeAnimationBuilder: (context, animation, child) =>
+                     SizeTransition(
+                       sizeFactor: animation,
+                       child: child,
+                 ),
+                 removeAnimationDuration: const Duration(milliseconds: 3000),
+                 insertAnimationDuration: const Duration(milliseconds: 1200),
+             ),
+           ],
+         );
 }
 
 ```
