@@ -2,6 +2,11 @@ import 'package:diffutil_dart/diffutil.dart' as diffutil;
 import 'package:diffutil_sliverlist/src/sliver_list_update_adapter.dart';
 import 'package:flutter/widgets.dart';
 
+typedef EqualityChecker<T> = bool Function(T, T);
+typedef DiffUtilWidgetBuilder<T> = Widget Function(BuildContext, T);
+typedef AnimatedDiffUtilWidgetBuilder = Widget Function(
+    BuildContext, Animation<double>, Widget);
+
 class DiffUtilSliverList<T> extends StatefulWidget {
   /// the (immutable) list of items
   final List<T> items;
@@ -10,16 +15,14 @@ class DiffUtilSliverList<T> extends StatefulWidget {
   final Widget Function(BuildContext, T) builder;
 
   /// builder that renders the insertion animation
-  final Widget Function(BuildContext, Animation<double>, Widget)
-      insertAnimationBuilder;
+  final AnimatedDiffUtilWidgetBuilder insertAnimationBuilder;
 
   /// that renders the removal animation
-  final Widget Function(BuildContext, Animation<double>, Widget)
-      removeAnimationBuilder;
+  final AnimatedDiffUtilWidgetBuilder removeAnimationBuilder;
   final Duration insertAnimationDuration;
   final Duration removeAnimationDuration;
 
-  final bool Function(T, T) equalityChecker;
+  final EqualityChecker<T> equalityChecker;
 
   const DiffUtilSliverList({
     Key key,

@@ -1,14 +1,12 @@
-import 'dart:html';
-
 import 'package:diffutil_dart/diffutil.dart' as diffutil;
+import 'package:diffutil_sliverlist/src/diffutil_sliverlist_widget.dart';
 import 'package:flutter/widgets.dart';
 
 class ListUpdateCallBackToSliverAnimatedListKeyAdapter<T>
     implements diffutil.ListUpdateCallback {
   final GlobalKey<SliverAnimatedListState> stateKey;
-  final Widget Function(BuildContext, Animation<double>, Widget)
-      removeAnimationBuilder;
-  final Widget Function(BuildContext, T) builder;
+  final AnimatedDiffUtilWidgetBuilder removeAnimationBuilder;
+  final DiffUtilWidgetBuilder<T> builder;
   final List<T> oldList;
   final Duration insertDuration;
   final Duration removeDuration;
