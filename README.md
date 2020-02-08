@@ -5,34 +5,33 @@
 A SliverList that implicitly animates changes.
 
 
-
 ```dart
 
 Widget build(BuildContext context) {
     return CustomScrollView(
-                 slivers: [
-                   DiffUtilSliverList.fromList<int>(
-                     list,
-                     builder: (context, item) => Container(
-                       color: colors[item % colors.length],
-                       height: 48,
-                       width: double.infinity,
-                     ),
-                     insertAnimationBuilder: (context, animation, child) =>
-                         FadeTransition(
+                     slivers: [
+                       DiffUtilSliverList<int>(
+                         items: list,
+                         builder: (context, item) => Container(
+                           color: colors[item % colors.length],
+                           height: 48,
+                           width: double.infinity,
+                         ),
+                         insertAnimationBuilder: (context, animation, child) =>
+                             FadeTransition(
                            opacity: animation,
                            child: child,
                          ),
-                     removeAnimationBuilder: (context, animation, child) =>
-                         SizeTransition(
+                         removeAnimationBuilder: (context, animation, child) =>
+                             SizeTransition(
                            sizeFactor: animation,
                            child: child,
                          ),
-                     removeAnimationDuration: const Duration(milliseconds: 300),
-                     insertAnimationDuration: const Duration(milliseconds: 120),
-                   ),
-                 ],
-               );
+                         removeAnimationDuration: const Duration(milliseconds: 3000),
+                         insertAnimationDuration: const Duration(milliseconds: 1200),
+                       ),
+                     ],
+                   );
 }
 
 ```
