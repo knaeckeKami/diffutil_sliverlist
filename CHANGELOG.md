@@ -1,3 +1,15 @@
+## 0.2.1
+
+Fix generic type issue
+
+## 0.2.0+3
+
+- Improve sample
+
+## 0.2.0+2
+
+- Fix typo in documentation
+
 ## 0.2.0+1
 
 - Documentation fixes

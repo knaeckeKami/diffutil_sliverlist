@@ -37,7 +37,7 @@ class ListUpdateCallBackToSliverAnimatedListKeyAdapter<T>
       stateKey.currentState
           .insertItem(position + loopCount, duration: insertDuration);
     }
-    oldList.insertAll(position, List.filled(count, null));
+    oldList.insertAll(position, List<T>.filled(count, null));
   }
 
   @override
