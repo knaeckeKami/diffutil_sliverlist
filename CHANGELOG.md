@@ -1,3 +1,8 @@
+## 0.3.0
+
+Add DiffUtilSliverList.fromKeyedWidgetList! You can now implicitly a animate changes in a List of
+Widgets, if every Widget has a unique key.
+
 ## 0.2.1
 
 Fix generic type issue

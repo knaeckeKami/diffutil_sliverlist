@@ -45,41 +45,74 @@ class _DiffUtilSliverListDemoState extends State<DiffUtilSliverListDemo> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text("DiffUtilSliverList Demo"),
+      home: DefaultTabController(
+        length: 2,
+        initialIndex: 0,
+        child: Scaffold(
+          appBar: AppBar(
+            bottom:
+                TabBar(tabs: [Tab(text: "example 1"), Tab(text: "example 2")]),
+          ),
+          body: TabBarView(
+            children: [
+              Scaffold(
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: _incrementCounter,
+                    tooltip: 'Increment',
+                    child: Icon(Icons.view_list),
+                  ), // This tr
+                  body: CustomScrollView(
+                    slivers: [
+                      DiffUtilSliverList<int>(
+                        items: list,
+                        builder: (context, item) => Container(
+                          color: colors[item % colors.length],
+                          height: 48,
+                          width: double.infinity,
+                        ),
+                        insertAnimationBuilder: (context, animation, child) =>
+                            FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        ),
+                        removeAnimationBuilder: (context, animation, child) =>
+                            SizeTransition(
+                          sizeFactor: animation,
+                          child: child,
+                        ),
+                        removeAnimationDuration:
+                            const Duration(milliseconds: 300),
+                        insertAnimationDuration:
+                            const Duration(milliseconds: 120),
+                      ),
+                    ],
+                  )),
+              CustomScrollView(
+                slivers: <Widget>[
+                  SliverToBoxAdapter(
+                    child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          "FIRST LIST",
+                          style: Theme.of(context).textTheme.subtitle2,
+                        )),
+                  ),
+                  ExpandableLists(),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        "SECOND LIST",
+                        style: Theme.of(context).textTheme.subtitle2,
+                      ),
+                    ),
+                  ),
+                  ExpandableLists(),
+                ],
+              ),
+            ],
+          ),
         ),
-        body: CustomScrollView(
-          slivers: [
-            DiffUtilSliverList<int>(
-              items: list,
-              builder: (context, item) => Container(
-                color: colors[item % colors.length],
-                height: 48,
-                width: double.infinity,
-              ),
-              insertAnimationBuilder: (context, animation, child) =>
-                  FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-              removeAnimationBuilder: (context, animation, child) =>
-                  SizeTransition(
-                sizeFactor: animation,
-                child: child,
-              ),
-              removeAnimationDuration: const Duration(milliseconds: 3000),
-              insertAnimationDuration: const Duration(milliseconds: 1200),
-            ),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _incrementCounter,
-          tooltip: 'Increment',
-          child: Icon(Icons.view_list),
-        ), // This trailing comma makes auto-formatting nicer for build methods.
       ),
     );
   }
@@ -90,4 +123,58 @@ class _DiffUtilSliverListDemoState extends State<DiffUtilSliverListDemo> {
     Colors.greenAccent,
     Colors.yellowAccent
   ];
+}
+
+class ExpandableLists extends StatefulWidget {
+  @override
+  _ExpandableListsState createState() => _ExpandableListsState();
+}
+
+class _ExpandableListsState extends State<ExpandableLists> {
+  bool expaned = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return DiffUtilSliverList.fromKeyedWidgetList(
+      children: [
+        ListTile(
+          key: Key("1"),
+          title: Text("first"),
+          trailing: Icon(Icons.chevron_right),
+        ),
+        ListTile(
+          key: Key("2"),
+          title: Text("second"),
+          trailing: Icon(Icons.chevron_right),
+        ),
+        if (this.expaned)
+          for (int i = 3; i < 6; i++)
+            ListTile(
+              key: Key(i.toString()),
+              title: Text("index: $i"),
+              trailing: Icon(Icons.chevron_right),
+            ),
+        ListTile(
+          key: Key("expand_collapse"),
+          onTap: () => setState(() {
+            expaned = !expaned;
+          }),
+          title: Text(expaned ? "collapse" : "expand", style: TextStyle(fontWeight: FontWeight.bold),),
+          trailing: Icon(expaned ? Icons.expand_less : Icons.expand_more),
+        )
+      ],
+      insertAnimationBuilder: (context, animation, child) => FadeTransition(
+        opacity: animation,
+        child: child,
+      ),
+      removeAnimationBuilder: (context, animation, child) => FadeTransition(
+        opacity: animation,
+        child: SizeTransition(
+          sizeFactor: animation,
+          axisAlignment: 0,
+          child: child,
+        ),
+      ),
+    );
+  }
 }

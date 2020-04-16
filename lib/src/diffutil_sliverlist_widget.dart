@@ -1,5 +1,6 @@
 import 'package:diffutil_dart/diffutil.dart' as diffutil;
 import 'package:diffutil_sliverlist/src/sliver_list_update_adapter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 typedef EqualityChecker<T> = bool Function(T, T);
@@ -24,6 +25,14 @@ class DiffUtilSliverList<T> extends StatefulWidget {
 
   final EqualityChecker<T> equalityChecker;
 
+
+  /// @param items a list of items to construct widgets from. Must implement == correctly if no equalityChecker is set.
+  /// @param builder builds a widget from a given item
+  /// @param insertAnimationBuilder The animation builder for insert animations
+  /// @param removeAnimationBuilder The animation builder for insert animations
+  /// @param insertAnimationDuration The duration of the insert animation
+  /// @param removeAnimationDuration The duration of the remove animation
+  /// @param equalityChecker optional custom equality implementation, defaults to ==
   const DiffUtilSliverList({
     Key key,
     @required this.items,
@@ -34,6 +43,44 @@ class DiffUtilSliverList<T> extends StatefulWidget {
     this.removeAnimationDuration = const Duration(milliseconds: 300),
     this.equalityChecker,
   }) : super(key: key);
+
+  /// Construct a animated list from a list widgets with unique keys.
+  ///
+  /// @param children A List a Widgets with unique keys
+  /// @param insertAnimationBuilder The animation builder for insert animations
+  /// @param removeAnimationBuilder The animation builder for insert animations
+  /// @param insertAnimationDuration The duration of the insert animation
+  /// @param removeAnimationDuration The duration of the remove animation
+  static DiffUtilSliverList<Widget> fromKeyedWidgetList({
+    @required List<Widget> children,
+    @required AnimatedDiffUtilWidgetBuilder insertAnimationBuilder,
+    @required AnimatedDiffUtilWidgetBuilder removeAnimationBuilder,
+    Duration insertAnimationDuration = const Duration(milliseconds: 300),
+    Duration removeAnimationDuration = const Duration(milliseconds: 300),
+  }) {
+    //
+    if (!kReleaseMode) {
+      final Set<Key> keys = {};
+      for (final Widget child in children) {
+        if (!keys.add(child.key)) {
+          throw FlutterError(
+              'DiffUtilSliverList.fromKeyedWidgetList called with widgets that do not contain unique keys! '
+              'This is an error as changed is this list cannot be animated reliably. Use unique keys or the default constructor. '
+              'This duplicate key was ${child.key} in widget  ${child}. '
+              'Note: Hot reload is often broken when this happens, better use Hot Restart');
+        }
+      }
+    }
+    return DiffUtilSliverList<Widget>(
+      items: children,
+      builder: (context, widget) => widget,
+      insertAnimationBuilder: insertAnimationBuilder,
+      removeAnimationBuilder: removeAnimationBuilder,
+      insertAnimationDuration: insertAnimationDuration,
+      removeAnimationDuration: removeAnimationDuration,
+      equalityChecker: (a, b) => a.key == b.key,
+    );
+  }
 
   @override
   _DiffUtilSliverListState<T> createState() => _DiffUtilSliverListState<T>();
@@ -68,6 +115,7 @@ class _DiffUtilSliverListState<T> extends State<DiffUtilSliverList<T>> {
 
   @override
   Widget build(BuildContext context) {
+
     return SliverAnimatedList(
       key: listKey,
       initialItemCount: widget.items.length,

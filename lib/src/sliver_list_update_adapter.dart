@@ -48,8 +48,6 @@ class ListUpdateCallBackToSliverAnimatedListKeyAdapter<T>
 
   @override
   void onRemoved(final int position, final int count) {
-    debugPrint("onRemoved $position $count");
-
     for (var loopCount = 0; loopCount < count; loopCount++) {
       final oldItem = oldList[position + loopCount];
       // i purposfully remove the item at the same position on each

@@ -4,6 +4,11 @@
 
 A SliverList that implicitly animates changes.
 
+It supports two use cases:
+
+## Building Widgets from a list of data objects that implement ==
+
+Example:
 
 ```dart
 
@@ -41,6 +46,67 @@ If `list` changes, the list will automatically animate new/removed items:
 
 ![](https://media.giphy.com/media/LRgWnoPvRPW5WEeJYq/giphy.gif)
 
+
+## Animating changes from a list of widgets with unique keys
+
+When you have a list of Widgets and can give each Widget a unique key, you can use `DiffUtilSliverList.fromKeyedWidgetList`.
+
+See the example code:
+
+```dart
+class _ExpandableListsState extends State<ExpandableLists> {
+  bool expaned = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return DiffUtilSliverList.fromKeyedWidgetList(
+      children: [
+        ListTile(
+          key: Key("1"),
+          title: Text("first"),
+          trailing: Icon(Icons.chevron_right),
+        ),
+        ListTile(
+          key: Key("2"),
+          title: Text("second"),
+          trailing: Icon(Icons.chevron_right),
+        ),
+        if (this.expaned)
+          for (int i = 3; i < 6; i++)
+            ListTile(
+              key: Key(i.toString()),
+              title: Text("index: $i"),
+              trailing: Icon(Icons.chevron_right),
+            ),
+        ListTile(
+          key: Key("expand_collapse"),
+          onTap: () => setState(() {
+            expaned = !expaned;
+          }),
+          title: Text(expaned ? "collapse" : "expand", style: TextStyle(fontWeight: FontWeight.bold),),
+          trailing: Icon(expaned ? Icons.expand_less : Icons.expand_more),
+        )
+      ],
+      insertAnimationBuilder: (context, animation, child) => FadeTransition(
+        opacity: animation,
+        child: child,
+      ),
+      removeAnimationBuilder: (context, animation, child) => FadeTransition(
+        opacity: animation,
+        child: SizeTransition(
+          sizeFactor: animation,
+          axisAlignment: 0,
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+```
+
+And the result:
+
+![](https://media.giphy.com/media/UrKN0Se7CCBwTBP01V/giphy.gif)
 
 ## How to use
 
