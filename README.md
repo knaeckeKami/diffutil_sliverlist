@@ -55,7 +55,7 @@ See the example code:
 
 ```dart
 class _ExpandableListsState extends State<ExpandableLists> {
-  bool expaned = false;
+  bool expanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +71,7 @@ class _ExpandableListsState extends State<ExpandableLists> {
           title: Text("second"),
           trailing: Icon(Icons.chevron_right),
         ),
-        if (this.expaned)
+        if (this.expanded)
           for (int i = 3; i < 6; i++)
             ListTile(
               key: Key(i.toString()),
@@ -83,8 +83,8 @@ class _ExpandableListsState extends State<ExpandableLists> {
           onTap: () => setState(() {
             expaned = !expaned;
           }),
-          title: Text(expaned ? "collapse" : "expand", style: TextStyle(fontWeight: FontWeight.bold),),
-          trailing: Icon(expaned ? Icons.expand_less : Icons.expand_more),
+          title: Text(expanded ? "collapse" : "expand", style: TextStyle(fontWeight: FontWeight.bold),),
+          trailing: Icon(expanded ? Icons.expand_less : Icons.expand_more),
         )
       ],
       insertAnimationBuilder: (context, animation, child) => FadeTransition(
