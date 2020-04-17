@@ -159,14 +159,20 @@ class _ExpandableListsState extends State<ExpandableLists> {
           onTap: () => setState(() {
             expaned = !expaned;
           }),
-          title: Text(expaned ? "collapse" : "expand", style: TextStyle(fontWeight: FontWeight.bold),),
+          title: Text(
+            expaned ? "collapse" : "expand",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           trailing: Icon(expaned ? Icons.expand_less : Icons.expand_more),
         )
       ],
-      insertAnimationBuilder: (context, animation, child) => FadeTransition(
-        opacity: animation,
-        child: child,
-      ),
+      insertAnimationBuilder: (context, animation, child) => SizeTransition(
+          sizeFactor: animation.drive(Tween<double>(begin: 0.7, end: 1)),
+          axisAlignment: 0,
+          child: FadeTransition(
+            opacity: animation,
+            child: child,
+          )),
       removeAnimationBuilder: (context, animation, child) => FadeTransition(
         opacity: animation,
         child: SizeTransition(

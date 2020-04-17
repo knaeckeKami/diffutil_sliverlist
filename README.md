@@ -6,46 +6,6 @@ A SliverList that implicitly animates changes.
 
 It supports two use cases:
 
-## Building Widgets from a list of data objects that implement ==
-
-Example:
-
-```dart
-
-Widget build(BuildContext context) {
-    return CustomScrollView(
-             slivers: [
-               DiffUtilSliverList<int>(
-                 items: list,
-                 builder: (context, item) => 
-                   Container(
-                     color: colors[item % colors.length],
-                     height: 48,
-                     width: double.infinity,
-                 ),
-                 insertAnimationBuilder: (context, animation, child) =>
-                     FadeTransition(
-                       opacity: animation,
-                       child: child,
-                 ),
-                 removeAnimationBuilder: (context, animation, child) =>
-                     SizeTransition(
-                       sizeFactor: animation,
-                       child: child,
-                 ),
-                 removeAnimationDuration: const Duration(milliseconds: 3000),
-                 insertAnimationDuration: const Duration(milliseconds: 1200),
-             ),
-           ],
-         );
-}
-
-```
-
-If `list` changes, the list will automatically animate new/removed items:
-
-![](https://media.giphy.com/media/LRgWnoPvRPW5WEeJYq/giphy.gif)
-
 
 ## Animating changes from a list of widgets with unique keys
 
@@ -107,6 +67,51 @@ class _ExpandableListsState extends State<ExpandableLists> {
 And the result:
 
 ![](https://media.giphy.com/media/UrKN0Se7CCBwTBP01V/giphy.gif)
+
+
+## Building Widgets from a list of data objects that implement ==
+
+Example:
+
+```dart
+
+Widget build(BuildContext context) {
+    return CustomScrollView(
+             slivers: [
+               DiffUtilSliverList<int>(
+                 items: list,
+                 builder: (context, item) => 
+                   Container(
+                     color: colors[item % colors.length],
+                     height: 48,
+                     width: double.infinity,
+                 ),
+                 insertAnimationBuilder: (context, animation, child) =>
+                     FadeTransition(
+                       opacity: animation,
+                       child: child,
+                 ),
+                 removeAnimationBuilder: (context, animation, child) =>
+                     SizeTransition(
+                       sizeFactor: animation,
+                       child: child,
+                 ),
+                 removeAnimationDuration: const Duration(milliseconds: 3000),
+                 insertAnimationDuration: const Duration(milliseconds: 1200),
+             ),
+           ],
+         );
+}
+
+```
+
+If `list` changes, the list will automatically animate new/removed items:
+
+![](https://media.giphy.com/media/LRgWnoPvRPW5WEeJYq/giphy.gif)
+
+If the items don't implement `==` correctly, you can pass your own `equalityChecker`.
+
+------
 
 ## How to use
 

@@ -25,7 +25,6 @@ class DiffUtilSliverList<T> extends StatefulWidget {
 
   final EqualityChecker<T> equalityChecker;
 
-
   /// @param items a list of items to construct widgets from. Must implement == correctly if no equalityChecker is set.
   /// @param builder builds a widget from a given item
   /// @param insertAnimationBuilder The animation builder for insert animations
@@ -115,7 +114,6 @@ class _DiffUtilSliverListState<T> extends State<DiffUtilSliverList<T>> {
 
   @override
   Widget build(BuildContext context) {
-
     return SliverAnimatedList(
       key: listKey,
       initialItemCount: widget.items.length,
