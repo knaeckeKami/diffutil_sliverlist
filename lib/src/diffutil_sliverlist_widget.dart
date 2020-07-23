@@ -1,5 +1,4 @@
 import 'package:diffutil_dart/diffutil.dart' as diffutil;
-import 'package:diffutil_sliverlist/src/sliver_list_update_adapter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -65,7 +64,7 @@ class DiffUtilSliverList<T> extends StatefulWidget {
           throw FlutterError(
               'DiffUtilSliverList.fromKeyedWidgetList called with widgets that do not contain unique keys! '
               'This is an error as changed is this list cannot be animated reliably. Use unique keys or the default constructor. '
-              'This duplicate key was ${child.key} in widget  ${child}. '
+              'This duplicate key was ${child.key} in widget $child. '
               'Note: Hot reload is often broken when this happens, better use Hot Restart');
         }
       }
@@ -88,6 +87,8 @@ class DiffUtilSliverList<T> extends StatefulWidget {
 class _DiffUtilSliverListState<T> extends State<DiffUtilSliverList<T>> {
   GlobalKey<SliverAnimatedListState> listKey;
 
+  List<T> tempList;
+
   @override
   void initState() {
     super.initState();
@@ -97,19 +98,16 @@ class _DiffUtilSliverListState<T> extends State<DiffUtilSliverList<T>> {
   @override
   void didUpdateWidget(DiffUtilSliverList<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final oldList = oldWidget.items;
+    final tempList = oldWidget.items;
     final newList = widget.items;
 
-    final diff = diffutil.calculateListDiff<T>(oldList, newList,
-        detectMoves: false, equalityChecker: widget.equalityChecker);
-    final diffHandler = ListUpdateCallBackToSliverAnimatedListKeyAdapter<T>(
-        listKey,
-        oldWidget.builder,
-        oldList,
-        oldWidget.removeAnimationBuilder,
-        widget.insertAnimationDuration,
-        widget.removeAnimationDuration);
-    diff.dispatchUpdatesTo(diffHandler);
+    final diff = diffutil
+        .calculateListDiff<T>(tempList, newList,
+            detectMoves: false, equalityChecker: widget.equalityChecker)
+        .getUpdates(batch: true);
+
+    this.tempList = tempList;
+    diff.forEach(_onDiffUpdate);
   }
 
   @override
@@ -123,5 +121,46 @@ class _DiffUtilSliverListState<T> extends State<DiffUtilSliverList<T>> {
         widget.builder(context, widget.items[index]),
       ),
     );
+  }
+
+  void _onChanged(int position, Object payload) {
+    listKey.currentState.removeItem(
+        position, (context, animation) => const SizedBox.shrink(),
+        duration: const Duration());
+    _onInserted(position, 1);
+  }
+
+  void _onInserted(final int position, final int count) {
+    for (var loopCount = 0; loopCount < count; loopCount++) {
+      listKey.currentState.insertItem(position + loopCount,
+          duration: widget.insertAnimationDuration);
+    }
+    tempList.insertAll(position, List<T>.filled(count, null));
+  }
+
+  void _onRemoved(final int position, final int count) {
+    for (var loopCount = 0; loopCount < count; loopCount++) {
+      final oldItem = tempList[position + loopCount];
+      // i purposefully remove the item at the same position on each
+      // turn. the internal state is updated, so it removes the right item
+      // actually. i only need to calculate the position of oldList
+      // which might get ot of sync if count > 1.
+      // the tempList is only updated at the end of the method for better performance
+      listKey.currentState.removeItem(
+          position,
+          (context, animation) => widget.removeAnimationBuilder(
+              context, animation, widget.builder(context, oldItem)),
+          duration: widget.removeAnimationDuration);
+    }
+    tempList.removeRange(position, position + count);
+  }
+
+  void _onDiffUpdate(diffutil.DiffUpdate update) {
+    update.when<void>(
+        move: (_, __) =>
+            throw UnimplementedError('moves are currently not supported'),
+        insert: _onInserted,
+        change: _onChanged,
+        remove: _onRemoved);
   }
 }

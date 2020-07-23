@@ -1,21 +1,15 @@
-
-
-
 import 'package:diffutil_dart/diffutil.dart';
 
-void main(){
+void main() {
+  final result = calculateListDiff([1, 2, 3], [3, 1, 0, 5]);
 
-
-    final result = calculateListDiff([1 ,2 , 3], [3, 1, 0 , 5]);
-
-    result.dispatchUpdatesTo(MyConsumer());
-
+  result.dispatchUpdatesTo(MyConsumer());
 }
 
 class MyConsumer implements ListUpdateCallback {
   @override
   void onChanged(int position, int count, Object payload) {
-     print("$position changed $count times: $payload");
+    print("$position changed $count times: $payload");
   }
 
   @override
@@ -32,7 +26,4 @@ class MyConsumer implements ListUpdateCallback {
   void onRemoved(int position, int count) {
     print("$count items removed at $position");
   }
-
-
-
 }
