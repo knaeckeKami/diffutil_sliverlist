@@ -1,3 +1,7 @@
+## 0.4.1
+
+Add Github Actions and more tests
+
 ## 0.4.0
 
 Upgrade diffutil.dart dependency to 1.0.0
