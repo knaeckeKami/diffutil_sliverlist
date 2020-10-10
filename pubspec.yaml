@@ -1,6 +1,6 @@
 name: diffutil_sliverlist
 description: A SliverList that implicitly animates changes using diffutil.dart.
-version: 0.4.0
+version: 0.4.0+2
 homepage: https://github.com/knaeckeKami/diffutil_sliverlist
 
 environment:
@@ -9,4 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  diffutil_dart: ^1.0.0
+  diffutil_dart: ^1.0.2
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
