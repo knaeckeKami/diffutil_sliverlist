@@ -1,6 +1,9 @@
 # diffutil_sliverlist
 
 [![Pub Package](https://img.shields.io/pub/v/diffutil_sliverlist.svg)](https://pub.dartlang.org/packages/diffutil_sliverlist)
+[![Build Status](https://github.com/knaeckeKami/diffutil_sliverlist/workflows/Build/badge.svg)](https://github.com/knaeckeKami/diffutil_sliverlist/actions)
+[![codecov](https://codecov.io/gh/knaeckeKami/diffutil_sliverlist/branch/master/graph/badge.svg)](https://codecov.io/gh/knaeckeKami/diffutil_sliverlist)
+
 
 A SliverList that implicitly animates changes.
 
