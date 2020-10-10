@@ -22,7 +22,10 @@ linter:
 # make the type system stronger!
 # see https://dart.dev/guides/language/analysis-options
 analyzer:
-  exclude: [build/**]
+  exclude:
+     - build/**
+      # workaround for https://github.com/dart-lang/sdk/issues/42910
+     - example/**
   language:
     strict-inference: true
     strict-raw-types: true
