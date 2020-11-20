@@ -22,7 +22,7 @@ class DiffUtilSliverList<T> extends StatefulWidget {
   final Duration insertAnimationDuration;
   final Duration removeAnimationDuration;
 
-  final EqualityChecker<T> equalityChecker;
+  final EqualityChecker<T>? equalityChecker;
 
   /// @param items a list of items to construct widgets from. Must implement == correctly if no equalityChecker is set.
   /// @param builder builds a widget from a given item
@@ -32,11 +32,11 @@ class DiffUtilSliverList<T> extends StatefulWidget {
   /// @param removeAnimationDuration The duration of the remove animation
   /// @param equalityChecker optional custom equality implementation, defaults to ==
   const DiffUtilSliverList({
-    Key key,
-    @required this.items,
-    @required this.builder,
-    @required this.insertAnimationBuilder,
-    @required this.removeAnimationBuilder,
+    Key? key,
+    required this.items,
+    required this.builder,
+    required this.insertAnimationBuilder,
+    required this.removeAnimationBuilder,
     this.insertAnimationDuration = const Duration(milliseconds: 300),
     this.removeAnimationDuration = const Duration(milliseconds: 300),
     this.equalityChecker,
@@ -50,16 +50,16 @@ class DiffUtilSliverList<T> extends StatefulWidget {
   /// @param insertAnimationDuration The duration of the insert animation
   /// @param removeAnimationDuration The duration of the remove animation
   static DiffUtilSliverList<Widget> fromKeyedWidgetList({
-    @required List<Widget> children,
-    @required AnimatedDiffUtilWidgetBuilder insertAnimationBuilder,
-    @required AnimatedDiffUtilWidgetBuilder removeAnimationBuilder,
+    required List<Widget> children,
+    required AnimatedDiffUtilWidgetBuilder insertAnimationBuilder,
+    required AnimatedDiffUtilWidgetBuilder removeAnimationBuilder,
     Duration insertAnimationDuration = const Duration(milliseconds: 300),
     Duration removeAnimationDuration = const Duration(milliseconds: 300),
   }) {
     //
-    if (!kReleaseMode) {
-      final Set<Key> keys = {};
-      for (final Widget child in children) {
+    if (kDebugMode) {
+      final keys = <Key?>{};
+      for (final child in children) {
         if (!keys.add(child.key)) {
           throw FlutterError(
               'DiffUtilSliverList.fromKeyedWidgetList called with widgets that do not contain unique keys! '
@@ -85,9 +85,9 @@ class DiffUtilSliverList<T> extends StatefulWidget {
 }
 
 class _DiffUtilSliverListState<T> extends State<DiffUtilSliverList<T>> {
-  GlobalKey<SliverAnimatedListState> listKey;
+  late GlobalKey<SliverAnimatedListState> listKey;
 
-  List<T> tempList;
+  late List<T?> tempList;
 
   @override
   void initState() {
@@ -102,11 +102,15 @@ class _DiffUtilSliverListState<T> extends State<DiffUtilSliverList<T>> {
     final newList = widget.items;
 
     final diff = diffutil
-        .calculateListDiff<T>(tempList, newList,
-            detectMoves: false, equalityChecker: widget.equalityChecker)
+        .calculateListDiff<T>(
+          tempList,
+          newList,
+          detectMoves: false,
+          equalityChecker: widget.equalityChecker,
+        )
         .getUpdates(batch: true);
 
-    this.tempList = tempList;
+    this.tempList = List<T?>.of(tempList);
     diff.forEach(_onDiffUpdate);
   }
 
@@ -123,8 +127,8 @@ class _DiffUtilSliverListState<T> extends State<DiffUtilSliverList<T>> {
     );
   }
 
-  void _onChanged(int position, Object payload) {
-    listKey.currentState.removeItem(
+  void _onChanged(int position, Object? payload) {
+    listKey.currentState!.removeItem(
         position, (context, animation) => const SizedBox.shrink(),
         duration: const Duration());
     _onInserted(position, 1);
@@ -132,21 +136,21 @@ class _DiffUtilSliverListState<T> extends State<DiffUtilSliverList<T>> {
 
   void _onInserted(final int position, final int count) {
     for (var loopCount = 0; loopCount < count; loopCount++) {
-      listKey.currentState.insertItem(position + loopCount,
+      listKey.currentState!.insertItem(position + loopCount,
           duration: widget.insertAnimationDuration);
     }
-    tempList.insertAll(position, List<T>.filled(count, null));
+    tempList.insertAll(position, List<T?>.filled(count, null));
   }
 
-  void _onRemoved(final int position, final int count) {
+  void _onRemoved(final int /*!*/ position, final int count) {
     for (var loopCount = 0; loopCount < count; loopCount++) {
-      final oldItem = tempList[position + loopCount];
+      final oldItem = tempList[position + loopCount]!;
       // i purposefully remove the item at the same position on each
       // turn. the internal state is updated, so it removes the right item
       // actually. i only need to calculate the position of oldList
       // which might get ot of sync if count > 1.
       // the tempList is only updated at the end of the method for better performance
-      listKey.currentState.removeItem(
+      listKey.currentState!.removeItem(
           position,
           (context, animation) => widget.removeAnimationBuilder(
               context, animation, widget.builder(context, oldItem)),
