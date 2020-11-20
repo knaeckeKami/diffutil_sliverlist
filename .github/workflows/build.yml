@@ -12,12 +12,15 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: cirrusci/flutter:dev
+      image: cirrusci/flutter:beta
 
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
       run: flutter pub get
+
+    - name: print Flutter version used in CI
+      run: flutter --version
 
     - name: Check format
       run: dart format --set-exit-if-changed .
