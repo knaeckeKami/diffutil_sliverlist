@@ -1,3 +1,11 @@
+## 0.5.0
+
+No changes, remove nullsafety suffix
+
+## 0.5.0-nullsafety.0
+
+Add null safety
+
 ## 0.4.1
 
 Add Github Actions and more tests
