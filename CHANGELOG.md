@@ -1,3 +1,7 @@
+## 0.5.1
+
+Relax version constraint on dependeny to diffutil_dart
+
 ## 0.5.0
 
 No changes, remove nullsafety suffix

@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 void main() => runApp(const DiffUtilSliverListDemo());
 
 class DiffUtilSliverListDemo extends StatefulWidget {
-  const DiffUtilSliverListDemo({Key key, required this.title}) : super(key: key);
+  const DiffUtilSliverListDemo({Key key, required this.title})
+      : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
