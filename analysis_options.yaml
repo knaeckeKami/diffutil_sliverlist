@@ -1,6 +1,5 @@
-#  recommended lint rules by goolle
-#  see https://dart.dev/guides/language/analysis-options#default-google-rules-pedantic
-include: package:pedantic/analysis_options.yaml
+
+include: package:lint/analysis_options.yaml
 
 # custom lint rules
 

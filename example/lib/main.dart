@@ -7,19 +7,7 @@ import 'package:flutter/material.dart';
 void main() => runApp(const DiffUtilSliverListDemo());
 
 class DiffUtilSliverListDemo extends StatefulWidget {
-  const DiffUtilSliverListDemo({Key key, required this.title})
-      : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  const DiffUtilSliverListDemo({super.key});
 
   @override
   _DiffUtilSliverListDemoState createState() => _DiffUtilSliverListDemoState();
@@ -35,9 +23,8 @@ class _DiffUtilSliverListDemoState extends State<DiffUtilSliverListDemo> {
       _counter++;
 
       if (Random().nextInt(3) > 0 || list.isEmpty) {
-        list = [...list, _counter];
+        list.add(_counter);
       } else {
-        list = [...list];
         list.removeAt(Random().nextInt(list.length));
       }
     });

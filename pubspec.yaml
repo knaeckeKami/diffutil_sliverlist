@@ -4,15 +4,15 @@ version: 0.5.1
 homepage: https://github.com/knaeckeKami/diffutil_sliverlist
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.17.0 <3.0.0'
 
 dependencies:
+  diffutil_dart: '>=2.0.0 <4.0.0'
   flutter:
     sdk: flutter
-  diffutil_dart: '>=2.0.0 <4.0.0'
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  pedantic: any
+  lint: ^1.8.2
