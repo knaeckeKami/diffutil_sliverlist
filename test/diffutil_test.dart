@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets("does not allow non-unique keys when using fromKeyedWidgetList", (tester) async {
+  testWidgets("does not allow non-unique keys when using fromKeyedWidgetList",
+      (tester) async {
     await tester.pumpWidget(
       Builder(
         builder: (context) => DiffUtilSliverList.fromKeyedWidgetList(
@@ -174,15 +175,17 @@ void main() {
         slivers: [
           ValueListenableBuilder(
             valueListenable: rebuilder,
-            builder: (BuildContext context, value, Widget? child) => DiffUtilSliverList<String>(
-                items: myList,
-                builder: (context, item) => Text(item),
-                insertAnimationBuilder: (context, animation, widget) =>
-                    SizeTransition(sizeFactor: animation, child: widget),
-                removeAnimationBuilder: (context, animation, widget) {
-                  removeCount++;
-                  return SizeTransition(sizeFactor: animation, child: widget);
-                }),
+            builder: (BuildContext context, value, Widget? child) =>
+                DiffUtilSliverList<String>(
+                    items: myList,
+                    builder: (context, item) => Text(item),
+                    insertAnimationBuilder: (context, animation, widget) =>
+                        SizeTransition(sizeFactor: animation, child: widget),
+                    removeAnimationBuilder: (context, animation, widget) {
+                      removeCount++;
+                      return SizeTransition(
+                          sizeFactor: animation, child: widget);
+                    }),
           ),
         ],
       ),
