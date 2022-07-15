@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets("does not allow non-unique keys when using fromKeyedWidgetList",
-      (tester) async {
+  testWidgets("does not allow non-unique keys when using fromKeyedWidgetList", (tester) async {
     await tester.pumpWidget(
       Builder(
         builder: (context) => DiffUtilSliverList.fromKeyedWidgetList(
@@ -160,6 +159,43 @@ void main() {
         ),
       ),
     );
+
+    expect(removeCount, 1);
+  });
+
+  testWidgets("mutable list", (tester) async {
+    final myList = ["1", "2", "3"];
+    final rebuilder = ValueNotifier(0);
+
+    int removeCount = 0;
+
+    final widget = MaterialApp(
+      home: CustomScrollView(
+        slivers: [
+          ValueListenableBuilder(
+            valueListenable: rebuilder,
+            builder: (BuildContext context, value, Widget? child) => DiffUtilSliverList<String>(
+                items: myList,
+                builder: (context, item) => Text(item),
+                insertAnimationBuilder: (context, animation, widget) =>
+                    SizeTransition(sizeFactor: animation, child: widget),
+                removeAnimationBuilder: (context, animation, widget) {
+                  removeCount++;
+                  return SizeTransition(sizeFactor: animation, child: widget);
+                }),
+          ),
+        ],
+      ),
+    );
+    await tester.pumpWidget(widget);
+
+    await tester.pumpAndSettle();
+
+    myList.removeLast();
+    //trigger a rebuild manually
+    rebuilder.value = rebuilder.value + 1;
+
+    await tester.pumpAndSettle();
 
     expect(removeCount, 1);
   });
