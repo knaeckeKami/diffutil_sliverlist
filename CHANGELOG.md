@@ -1,3 +1,8 @@
+## 0.6.0-beta.1
+
+- allow mutations to the passed list by copying the list
+
+
 ## 0.5.1
 
 Relax version constraint on dependeny to diffutil_dart
